@@ -36,4 +36,4 @@ Creating a Private key file
 
 NOTE: You must set a passphrase for the .pem file
 
-4) Remote the passphrase from the .pem file: `openssl rsa -in key.pem -out key.pem`
+4) Remove the passphrase from the .pem file: `openssl rsa -in key.pem -out key.pem`
