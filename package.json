@@ -1,8 +1,26 @@
 {
 	"name": "gapitoken",
 	"version": "0.0.1",
+	"description": "Node.js module for Google API service account authorization (Server to Server flow)",
 	"main": "gapitoken.js",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/bsphere/node-gapitoken.git"
+	},
+	"keywords": [
+		"jwt",
+		"jws",
+		"google",
+		"api",
+		"token",
+		"service"
+	],
+	"author": {
+		"name": "Gal Ben-Haim"
+	},
+	"license": "MIT",
+	"readmeFilename": "README.md",
 	"dependencies": {
-		"jws": "*"
+		"jws": "0.0.2"
 	}
 }
