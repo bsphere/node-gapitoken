@@ -28,7 +28,8 @@ Usage
 
 Creating a Private key file
 ---------------------------
-1) Login to Google API Console and create a service account for Your project.
+
+1) Login to Google API Console, and under "API Access" create a "service account" for your project.
 
 2) Download the .p12 private key file
 
