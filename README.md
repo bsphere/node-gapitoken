@@ -25,6 +25,8 @@ Usage
            console.log(token);
        });     
     });
+    
+* for using node-gapitoken to access Google Cloud Storage see https://github.com/bsphere/node-gcs
 
 Creating a Private key file
 ---------------------------
