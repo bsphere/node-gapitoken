@@ -52,6 +52,7 @@ GAPI.prototype.getAccessToken = function(callback) {
         }
     };
 
+    var self = this;
     var post_req = https.request(post_options, function(res) {
         var d = '';
         res.setEncoding('utf8');
@@ -62,18 +63,18 @@ GAPI.prototype.getAccessToken = function(callback) {
         res.on('end', function() {
             d = JSON.parse(d);
             if (d.error) {
-                this.token = null;
-                this.token_expires = null;
+                self.token = null;
+                self.token_expires = null;
                 callback(d, null);
             } else {
-                this.token = d.access_token;
-                this.token_expires = iat + 3600;
-                callback(null, this.token);
+                self.token = d.access_token;
+                self.token_expires = iat + 3600;
+                callback(null, self.token);
             }
         });
     }).on('error', function(err) {
-            this.token = null;
-            this.token_expires = null;
+            self.token = null;
+            self.token_expires = null;
             callback(err, null);
     });
 
