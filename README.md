@@ -25,6 +25,29 @@ Usage
            console.log(token);
        });     
     });
+
+Another option is to pass the private key as a string
+
+    var key = "-----BEGIN RSA PRIVATE KEY-----\n\
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\
+    -----END RSA PRIVATE KEY-----";
+
+    var gapi = new GAPI({
+        iss: 'service account email address from Google API console',
+        scope: 'space delimited list of requested scopes',
+        key: key
+    }, function() {
+       gapi.getToken(function(err, token) {
+           if (err) { return console.log(err); }
+           console.log(token);
+       });     
+    });
+
     
 * for using node-gapitoken to access Google Cloud Storage see https://github.com/bsphere/node-gcs
 

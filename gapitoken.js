@@ -9,12 +9,21 @@ var GAPI = function(options, callback) {
 	this.iss = options.iss;
 	this.scope = options.scope;
 	
-	var self = this;
-	fs.readFile(options.keyFile, function(err, res) {
-		if (err) { return callback(err); }
-		self.key = res;
-		callback();
-	});
+    if (options.keyFile) {
+        var self = this;
+        process.nextTick(function() {
+            fs.readFile(options.keyFile, function(err, res) {
+                if (err) { return callback(err); }
+                self.key = res;
+                callback();
+            });        
+        });
+    } else if (options.key) {
+        this.key = options.key;
+        process.nextTick(callback);
+    } else {
+        throw new Error("Missing key, key or keyFile option must be provided!");
+    }
 };
 
 GAPI.prototype.getToken = function(callback) {
