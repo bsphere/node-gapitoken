@@ -8,6 +8,8 @@ var GAPI = function(options, callback) {
 
 	this.iss = options.iss;
 	this.scope = options.scope;
+	this.sub = options.sub;
+	this.prn = options.prn;
 	
     if (options.keyFile) {
         var self = this;
@@ -42,7 +44,9 @@ GAPI.prototype.getAccessToken = function(callback) {
         scope: this.scope,
         aud: 'https://accounts.google.com/o/oauth2/token',
         exp: iat + 3600,
-        iat: iat
+        iat: iat,
+		prn : this.prn,
+		sub : this.sub
     };
 
     var signedJWT = jws.sign({
