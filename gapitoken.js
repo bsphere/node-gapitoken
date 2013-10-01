@@ -44,10 +44,14 @@ GAPI.prototype.getAccessToken = function(callback) {
         scope: this.scope,
         aud: 'https://accounts.google.com/o/oauth2/token',
         exp: iat + 3600,
-        iat: iat,
-		prn : this.prn,
-		sub : this.sub
+        iat: iat
     };
+
+	if(this.sub)
+		payload.sub = this.sub;
+
+	if(this.prn)
+		payload.prn = this.prn;
 
     var signedJWT = jws.sign({
         header: {alg: 'RS256', typ: 'JWT'},
