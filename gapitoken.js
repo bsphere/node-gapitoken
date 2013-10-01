@@ -8,6 +8,8 @@ var GAPI = function(options, callback) {
 
 	this.iss = options.iss;
 	this.scope = options.scope;
+	this.sub = options.sub;
+	this.prn = options.prn;
 	
     if (options.keyFile) {
         var self = this;
@@ -44,6 +46,12 @@ GAPI.prototype.getAccessToken = function(callback) {
         exp: iat + 3600,
         iat: iat
     };
+
+	if(this.sub)
+		payload.sub = this.sub;
+
+	if(this.prn)
+		payload.prn = this.prn;
 
     var signedJWT = jws.sign({
         header: {alg: 'RS256', typ: 'JWT'},
