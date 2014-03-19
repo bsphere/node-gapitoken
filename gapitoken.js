@@ -78,15 +78,19 @@ GAPI.prototype.getAccessToken = function(callback) {
         });
 
         res.on('end', function() {
-            d = JSON.parse(d);
-            if (d.error) {
-                self.token = null;
-                self.token_expires = null;
-                callback(d, null);
-            } else {
-                self.token = d.access_token;
-                self.token_expires = iat + 3600;
-                callback(null, self.token);
+            try {
+                d = JSON.parse(d);
+                if (d.error) {
+                    self.token = null;
+                    self.token_expires = null;
+                    callback(d, null);
+                } else {
+                    self.token = d.access_token;
+                    self.token_expires = iat + 3600;
+                    callback(null, self.token);
+                }
+            } catch (e) {
+                callback(e, null);
             }
         });
     }).on('error', function(err) {
