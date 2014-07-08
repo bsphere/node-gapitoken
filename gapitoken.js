@@ -10,7 +10,12 @@ var GAPI = function(options, callback) {
 	this.scope = options.scope;
 	this.sub = options.sub;
 	this.prn = options.prn;
-	
+	this.aud = options.audience || 'https://accounts.google.com/o/oauth2/token';
+	this.host = options.host || 'accounts.google.com';
+	this.path = options.path || '/o/oauth2/token';
+	this.port = options.port;
+	this.grant = options.grant || 'urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer';
+
     if (options.keyFile) {
         var self = this;
         process.nextTick(function() {
@@ -18,7 +23,7 @@ var GAPI = function(options, callback) {
                 if (err) { return callback(err); }
                 self.key = res;
                 callback();
-            });        
+            });
         });
     } else if (options.key) {
         this.key = options.key;
@@ -33,7 +38,7 @@ GAPI.prototype.getToken = function(callback) {
         callback(null, this.token);
     } else {
         this.getAccessToken(callback);
-    }	
+    }
 };
 
 GAPI.prototype.getAccessToken = function(callback) {
@@ -42,7 +47,7 @@ GAPI.prototype.getAccessToken = function(callback) {
     var payload = {
         iss: this.iss,
         scope: this.scope,
-        aud: 'https://accounts.google.com/o/oauth2/token',
+        aud: this.aud,
         exp: iat + 3600,
         iat: iat
     };
@@ -59,15 +64,18 @@ GAPI.prototype.getAccessToken = function(callback) {
         secret: this.key
     });
 
-    var post_data = 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + signedJWT;
+    var post_data = 'grant_type=' + this.grant + '&assertion=' + signedJWT;
     var post_options = {
-        host: 'accounts.google.com',
-        path: '/o/oauth2/token',
+        host: this.host,
+        path: this.path,
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
+		if (this.port) {
+			post_options.port = this.port;
+		}
 
     var self = this;
     var post_req = https.request(post_options, function(res) {
@@ -100,7 +108,7 @@ GAPI.prototype.getAccessToken = function(callback) {
     });
 
     post_req.write(post_data);
-    post_req.end();	
+    post_req.end();
 };
 
 module.exports = GAPI;
