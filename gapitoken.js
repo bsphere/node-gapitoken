@@ -14,7 +14,7 @@ var GAPI = function(options, callback) {
 	this.host = options.host || 'accounts.google.com';
 	this.path = options.path || '/o/oauth2/token';
 	this.port = options.port;
-	this.grant = options.grant || 'urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer';
+	this.grant = encodeURIComponent(options.grant) || 'urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer';
 
     if (options.keyFile) {
         var self = this;
@@ -73,6 +73,7 @@ GAPI.prototype.getAccessToken = function(callback) {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
+
 		if (this.port) {
 			post_options.port = this.port;
 		}
