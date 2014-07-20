@@ -14,23 +14,23 @@ var GAPI = function(options, callback) {
 	this.host = options.host || 'accounts.google.com';
 	this.path = options.path || '/o/oauth2/token';
 	this.port = options.port;
-	this.grant = encodeURIComponent(options.grant) || 'urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer';
+	this.grant = options.grant || 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 
-    if (options.keyFile) {
-        var self = this;
-        process.nextTick(function() {
-            fs.readFile(options.keyFile, function(err, res) {
-                if (err) { return callback(err); }
-                self.key = res;
-                callback();
-            });
-        });
-    } else if (options.key) {
-        this.key = options.key;
-        process.nextTick(callback);
-    } else {
-        callback(new Error("Missing key, key or keyFile option must be provided!"));
-    }
+	if (options.keyFile) {
+      var self = this;
+      process.nextTick(function() {
+          fs.readFile(options.keyFile, function(err, res) {
+              if (err) { return callback(err); }
+              self.key = res;
+              callback();
+          });
+      });
+  } else if (options.key) {
+      this.key = options.key;
+      process.nextTick(callback);
+  } else {
+      callback(new Error("Missing key, key or keyFile option must be provided!"));
+  }
 };
 
 GAPI.prototype.getToken = function(callback) {
@@ -64,7 +64,7 @@ GAPI.prototype.getAccessToken = function(callback) {
         secret: this.key
     });
 
-    var post_data = 'grant_type=' + this.grant + '&assertion=' + signedJWT;
+    var post_data = 'grant_type=' + encodeURIComponent(this.grant) + '&assertion=' + signedJWT;
     var post_options = {
         host: this.host,
         path: this.path,
