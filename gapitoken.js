@@ -90,7 +90,7 @@ GAPI.prototype.getAccessToken = function(callback) {
                     callback(null, self.token);
                 }
             } catch (e) {
-                callback(e, null);
+                callback(new Error(d), null);
             }
         });
     }).on('error', function(err) {
