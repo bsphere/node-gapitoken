@@ -26,7 +26,7 @@ var GAPI = function(options, callback) {
         this.key = options.key;
         process.nextTick(callback);
     } else {
-        callback(new Error("Missing key, key or keyFile option must be provided!"));
+        callback(new Error('Missing key, key or keyFile option must be provided!'));
     }
 };
 
