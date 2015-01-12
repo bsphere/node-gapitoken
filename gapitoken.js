@@ -3,14 +3,14 @@ var jws = require('jws');
 var fs = require('fs');
 
 var GAPI = function(options, callback) {
-	this.token = null;
-	this.token_expires = null;
+    this.token = null;
+    this.token_expires = null;
 
-	this.iss = options.iss;
-	this.scope = options.scope;
-	this.sub = options.sub;
-	this.prn = options.prn;
-	
+    this.iss = options.iss;
+    this.scope = options.scope;
+    this.sub = options.sub;
+    this.prn = options.prn;
+
     if (options.keyFile) {
         var self = this;
         process.nextTick(function() {
@@ -18,7 +18,7 @@ var GAPI = function(options, callback) {
                 if (err) { return callback(err); }
                 self.key = res;
                 callback();
-            });        
+            });
         });
     } else if (options.key) {
         this.key = options.key;
@@ -29,11 +29,11 @@ var GAPI = function(options, callback) {
 };
 
 GAPI.prototype.getToken = function(callback) {
-	if (this.token && this.token_expires && (new Date()).getTime() < this.token_expires * 1000) {
+    if (this.token && this.token_expires && (new Date()).getTime() < this.token_expires * 1000) {
         callback(null, this.token);
     } else {
         this.getAccessToken(callback);
-    }	
+    }
 };
 
 GAPI.prototype.getAccessToken = function(callback) {
@@ -47,11 +47,11 @@ GAPI.prototype.getAccessToken = function(callback) {
         iat: iat
     };
 
-	if(this.sub)
-		payload.sub = this.sub;
+    if (this.sub)
+        payload.sub = this.sub;
 
-	if(this.prn)
-		payload.prn = this.prn;
+    if (this.prn)
+        payload.prn = this.prn;
 
     var signedJWT = jws.sign({
         header: {alg: 'RS256', typ: 'JWT'},
@@ -100,7 +100,7 @@ GAPI.prototype.getAccessToken = function(callback) {
     });
 
     post_req.write(post_data);
-    post_req.end();	
+    post_req.end();
 };
 
 module.exports = GAPI;
