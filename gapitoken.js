@@ -1,3 +1,5 @@
+'use strict';
+
 var https = require('https');
 var jws = require('jws');
 var fs = require('fs');
