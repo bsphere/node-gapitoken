@@ -5,7 +5,7 @@ var jws = require('jws');
 var fs = require('fs');
 var qs = require('qs');
 
-var GAPI = function(options, callback) {
+var GAPI = function GAPI(options, callback) {
     this.token = null;
     this.token_expires = null;
 
@@ -31,7 +31,7 @@ var GAPI = function(options, callback) {
     }
 };
 
-GAPI.prototype.getToken = function(callback) {
+GAPI.prototype.getToken = function getToken(callback) {
     if (this.token && this.token_expires && (new Date()).getTime() < this.token_expires * 1000) {
         process.nextTick(function() {
             callback(null, this.token);
@@ -41,7 +41,7 @@ GAPI.prototype.getToken = function(callback) {
     }
 };
 
-GAPI.prototype.getAccessToken = function(callback) {
+GAPI.prototype.getAccessToken = function getAccessToken(callback) {
     var iat = Math.floor(new Date().getTime() / 1000);
 
     var payload = {
