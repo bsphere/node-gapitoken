@@ -13,6 +13,7 @@ var GAPI = function GAPI(options, callback) {
     this.scope = options.scope;
     this.sub = options.sub;
     this.prn = options.prn;
+    this.kid = options.kid;
 
     if (options.keyFile) {
         var self = this;
@@ -44,6 +45,11 @@ GAPI.prototype.getToken = function getToken(callback) {
 GAPI.prototype.getAccessToken = function getAccessToken(callback) {
     var iat = Math.floor(new Date().getTime() / 1000);
 
+    var header = {
+        alg: 'RS256',
+        typ: 'JWT'
+    };
+
     var payload = {
         iss: this.iss,
         scope: this.scope,
@@ -52,6 +58,9 @@ GAPI.prototype.getAccessToken = function getAccessToken(callback) {
         iat: iat
     };
 
+    if (this.kid)
+        header.kid = this.kid;
+
     if (this.sub)
         payload.sub = this.sub;
 
@@ -59,7 +68,7 @@ GAPI.prototype.getAccessToken = function getAccessToken(callback) {
         payload.prn = this.prn;
 
     var signedJWT = jws.sign({
-        header: {alg: 'RS256', typ: 'JWT'},
+        header: header,
         payload: payload,
         secret: this.key
     });
