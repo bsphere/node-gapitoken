@@ -3,6 +3,7 @@
 var https = require('https');
 var jws = require('jws');
 var fs = require('fs');
+var qs = require('qs');
 
 var GAPI = function(options, callback) {
     this.token = null;
@@ -63,7 +64,10 @@ GAPI.prototype.getAccessToken = function(callback) {
         secret: this.key
     });
 
-    var post_data = 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + signedJWT;
+    var post_data = qs.encode({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: signedJWT
+    });
     var post_options = {
         host: 'accounts.google.com',
         path: '/o/oauth2/token',
