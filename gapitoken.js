@@ -15,24 +15,26 @@ var GAPI = function(options, callback) {
 
     if (options.keyFile) {
         var self = this;
-        process.nextTick(function() {
-            fs.readFile(options.keyFile, function(err, res) {
-                if (err) { return callback(err); }
-                self.key = res;
-                callback();
-            });
+        fs.readFile(options.keyFile, function(err, res) {
+            if (err) { return callback(err); }
+            self.key = res;
+            callback();
         });
     } else if (options.key) {
         this.key = options.key;
         process.nextTick(callback);
     } else {
-        callback(new Error('Missing key, key or keyFile option must be provided!'));
+        process.nextTick(function() {
+            callback(new Error('Missing key, key or keyFile option must be provided!'));
+        });
     }
 };
 
 GAPI.prototype.getToken = function(callback) {
     if (this.token && this.token_expires && (new Date()).getTime() < this.token_expires * 1000) {
-        callback(null, this.token);
+        process.nextTick(function() {
+            callback(null, this.token);
+        });
     } else {
         this.getAccessToken(callback);
     }
