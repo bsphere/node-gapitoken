@@ -6,8 +6,8 @@ Node.js module for Google API service account authorization (Server to Server fl
 Installation
 ------------
 
-	npm install gapitoken
-	
+  npm install gapitoken
+
 Usage
 -----
 
