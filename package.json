@@ -21,6 +21,7 @@
 	"license": "MIT",
 	"readmeFilename": "README.md",
 	"dependencies": {
-		"jws": "0.0.2"
+		"jws": "0.0.2",
+		"p12-to-pem": "^1.0.1"
 	}
 }
