@@ -1,29 +1,29 @@
 node-gapitoken
 ==============
 
-Node.js module for Google API service account authorization (Server to Server flow). 
+Node.js module for Google-compatible API service account authorization (Server to Server flow).
 
 Installation
 ------------
 
-	npm install gapitoken
-	
+	npm install gapitoken-generic
+
 Usage
 -----
 
-    var GAPI = require('gapitoken');
- 
+    var GAPI = require('gapitoken-generic');
+
     var gapi = new GAPI({
         iss: 'service account email address from Google API console',
         scope: 'space delimited list of requested scopes',
         keyFile: 'path to private_key.pem'
     }, function(err) {
        if (err) { return console.log(err); }
- 
+
        gapi.getToken(function(err, token) {
            if (err) { return console.log(err); }
            console.log(token);
-       });     
+       });
     });
 
 Another option is to pass the private key as a string
@@ -45,10 +45,10 @@ Another option is to pass the private key as a string
        gapi.getToken(function(err, token) {
            if (err) { return console.log(err); }
            console.log(token);
-       });     
+       });
     });
 
-    
+
 * for using node-gapitoken to access Google Cloud Storage see https://github.com/bsphere/node-gcs
 
 Creating a Private key file
