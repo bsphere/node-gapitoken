@@ -1,54 +1,43 @@
-'use strict';
-
 var https = require('https');
 var jws = require('jws');
 var fs = require('fs');
-var qs = require('qs');
 
-var GAPI = function GAPI(options, callback) {
-    this.token = null;
-    this.token_expires = null;
+var GAPI = function(options, callback) {
+	this.token = null;
+	this.token_expires = null;
 
-    this.iss = options.iss;
-    this.scope = options.scope;
-    this.sub = options.sub;
-    this.prn = options.prn;
-    this.kid = options.kid;
-
+	this.iss = options.iss;
+	this.scope = options.scope;
+	this.sub = options.sub;
+	this.prn = options.prn;
+	
     if (options.keyFile) {
         var self = this;
-        fs.readFile(options.keyFile, function(err, res) {
-            if (err) { return callback(err); }
-            self.key = res;
-            callback();
+        process.nextTick(function() {
+            fs.readFile(options.keyFile, function(err, res) {
+                if (err) { return callback(err); }
+                self.key = res;
+                callback();
+            });        
         });
     } else if (options.key) {
         this.key = options.key;
         process.nextTick(callback);
     } else {
-        process.nextTick(function() {
-            callback(new Error('Missing key, key or keyFile option must be provided!'));
-        });
+        callback(new Error("Missing key, key or keyFile option must be provided!"));
     }
 };
 
-GAPI.prototype.getToken = function getToken(callback) {
-    if (this.token && this.token_expires && (new Date()).getTime() < this.token_expires * 1000) {
-        process.nextTick(function() {
-            callback(null, this.token);
-        });
+GAPI.prototype.getToken = function(callback) {
+	if (this.token && this.token_expires && (new Date()).getTime() < this.token_expires * 1000) {
+        callback(null, this.token);
     } else {
         this.getAccessToken(callback);
-    }
+    }	
 };
 
-GAPI.prototype.getAccessToken = function getAccessToken(callback) {
+GAPI.prototype.getAccessToken = function(callback) {
     var iat = Math.floor(new Date().getTime() / 1000);
-
-    var header = {
-        alg: 'RS256',
-        typ: 'JWT'
-    };
 
     var payload = {
         iss: this.iss,
@@ -58,25 +47,19 @@ GAPI.prototype.getAccessToken = function getAccessToken(callback) {
         iat: iat
     };
 
-    if (this.kid)
-        header.kid = this.kid;
+	if(this.sub)
+		payload.sub = this.sub;
 
-    if (this.sub)
-        payload.sub = this.sub;
-
-    if (this.prn)
-        payload.prn = this.prn;
+	if(this.prn)
+		payload.prn = this.prn;
 
     var signedJWT = jws.sign({
-        header: header,
+        header: {alg: 'RS256', typ: 'JWT'},
         payload: payload,
         secret: this.key
     });
 
-    var post_data = qs.encode({
-        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-        assertion: signedJWT
-    });
+    var post_data = 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + signedJWT;
     var post_options = {
         host: 'accounts.google.com',
         path: '/o/oauth2/token',
@@ -117,7 +100,7 @@ GAPI.prototype.getAccessToken = function getAccessToken(callback) {
     });
 
     post_req.write(post_data);
-    post_req.end();
+    post_req.end();	
 };
 
 module.exports = GAPI;
