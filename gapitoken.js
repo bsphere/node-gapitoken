@@ -1,6 +1,8 @@
-var https = require('https');
+'use strict';
+
 var jws = require('jws');
 var fs = require('fs');
+var request = require('request');
 
 var GAPI = function(options, callback) {
 	this.token = null;
@@ -10,7 +12,7 @@ var GAPI = function(options, callback) {
 	this.scope = options.scope;
 	this.sub = options.sub;
 	this.prn = options.prn;
-	
+
     if (options.keyFile) {
         var self = this;
         process.nextTick(function() {
@@ -18,7 +20,7 @@ var GAPI = function(options, callback) {
                 if (err) { return callback(err); }
                 self.key = res;
                 callback();
-            });        
+            });
         });
     } else if (options.key) {
         this.key = options.key;
@@ -33,10 +35,11 @@ GAPI.prototype.getToken = function(callback) {
         callback(null, this.token);
     } else {
         this.getAccessToken(callback);
-    }	
+    }
 };
 
 GAPI.prototype.getAccessToken = function(callback) {
+    var self = this;
     var iat = Math.floor(new Date().getTime() / 1000);
 
     var payload = {
@@ -59,48 +62,41 @@ GAPI.prototype.getAccessToken = function(callback) {
         secret: this.key
     });
 
-    var post_data = 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + signedJWT;
     var post_options = {
-        host: 'accounts.google.com',
-        path: '/o/oauth2/token',
+        url: 'https://accounts.google.com/o/oauth2/token',
         method: 'POST',
+        strictSSL: false,
+        form: {
+          'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+          'assertion': signedJWT
+        },
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
 
-    var self = this;
-    var post_req = https.request(post_options, function(res) {
-        var d = '';
-        res.setEncoding('utf8');
-        res.on('data', function(chunk) {
-            d += chunk;
-        });
-
-        res.on('end', function() {
-            try {
-                d = JSON.parse(d);
-                if (d.error) {
-                    self.token = null;
-                    self.token_expires = null;
-                    callback(d, null);
-                } else {
-                    self.token = d.access_token;
-                    self.token_expires = iat + 3600;
-                    callback(null, self.token);
-                }
-            } catch (e) {
-                callback(new Error(d), null);
-            }
-        });
-    }).on('error', function(err) {
+    request(post_options, function(error, response, body) {
+      if(error){
+        self.token = null;
+        self.token_expires = null;
+        callback(error, null);
+      } else {
+        try {
+          var d = JSON.parse(body);
+          if (d.error) {
             self.token = null;
             self.token_expires = null;
-            callback(err, null);
+            callback(d.error, null);
+          } else {
+            self.token = d.access_token;
+            self.token_expires = iat + 3600;
+            callback(null, self.token);
+          }
+        } catch (e) {
+          callback(e, null);
+        }
+      }
     });
-
-    post_req.write(post_data);
-    post_req.end();	
 };
 
 module.exports = GAPI;
