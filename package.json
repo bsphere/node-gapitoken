@@ -21,7 +21,7 @@
 	"license": "MIT",
 	"readmeFilename": "README.md",
 	"dependencies": {
-		"jws": "0.0.2",
+		"jws": "~3.0.0",
     "request": "^2.54.0"
 	}
 }
