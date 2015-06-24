@@ -1,6 +1,6 @@
 {
 	"name": "gapitoken",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "Node.js module for Google API service account authorization (Server to Server flow)",
 	"main": "gapitoken.js",
 	"repository": {
@@ -22,6 +22,6 @@
 	"readmeFilename": "README.md",
 	"dependencies": {
 		"jws": "~3.0.0",
-    "request": "^2.54.0"
+    		"request": "^2.54.0"
 	}
 }
