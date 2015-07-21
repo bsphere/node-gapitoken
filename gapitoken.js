@@ -3,6 +3,7 @@
 var jws = require('jws');
 var fs = require('fs');
 var request = require('request');
+var p12ToPem = require('p12-to-pem');
 
 var GAPI = function(options, callback) {
 	this.token = null;
@@ -18,12 +19,12 @@ var GAPI = function(options, callback) {
         process.nextTick(function() {
             fs.readFile(options.keyFile, function(err, res) {
                 if (err) { return callback(err); }
-                self.key = res;
+                self.key = decodeKey(res);
                 callback();
             });
         });
     } else if (options.key) {
-        this.key = options.key;
+        this.key = decodeKey(options.key);
         process.nextTick(callback);
     } else {
         callback(new Error("Missing key, key or keyFile option must be provided!"));
@@ -98,5 +99,19 @@ GAPI.prototype.getAccessToken = function(callback) {
       }
     });
 };
+
+// Takes either a raw, unprotected key or a password-protected PKCS12 file
+// containing a private key and returns the key.
+function decodeKey(key) {
+    var keyString = key.toString();
+    var maybeP12 = keyString.indexOf("PRIVATE KEY-----") === -1;
+    if (maybeP12) {
+        // Google's PKCS12 files use the password "notasecret"
+        return p12ToPem(key, "notasecret");
+    }
+    else {
+        return keyString;
+    }
+}
 
 module.exports = GAPI;

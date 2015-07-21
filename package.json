@@ -22,7 +22,8 @@
 	"readmeFilename": "README.md",
 	"dependencies": {
 		"jws": "~3.0.0",
-		"request": "^2.54.0"
+		"request": "^2.54.0",
+		"p12-to-pem": "^1.0.1"
 	},
 	"devDependencies": {
 		"mocha": "^2.2.5"
