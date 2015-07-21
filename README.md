@@ -3,6 +3,9 @@ node-gapitoken
 
 Node.js module for Google API service account authorization (Server to Server flow). 
 
+[![Build Status](https://travis-ci.org/bsphere/node-gapitoken.svg)](https://travis-ci.org/bsphere/node-gapitoken)
+
+
 Installation
 ------------
 
